@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #ffe4f4 0%, #f8d7f0 30%, #e8d5f8 65%, #d5e8ff 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: 'Baloo 2', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  border: none;
+  text-align: unset;
+  display: block;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
