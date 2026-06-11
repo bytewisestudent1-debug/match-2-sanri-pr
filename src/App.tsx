@@ -4,7 +4,16 @@ import { ScoreBoard } from './components/ScoreBoard';
 import { WinScreen } from './components/WinScreen';
 import styles from './App.module.css';
 
-const floaties = ['✿', '♡', '★', '✦', '♪', '✿', '♡', '✧', '◎', '♡'];
+const floaties = [
+  { symbol: '✿', duration: 11 }, { symbol: '♡', duration: 14 },
+  { symbol: '★', duration: 9  }, { symbol: '✦', duration: 16 },
+  { symbol: '♪', duration: 13 }, { symbol: '✿', duration: 10 },
+  { symbol: '♡', duration: 15 }, { symbol: '✧', duration: 8  },
+  { symbol: '◎', duration: 12 }, { symbol: '♡', duration: 17 },
+  { symbol: '✦', duration: 10 }, { symbol: '✿', duration: 13 },
+  { symbol: '♬', duration: 11 }, { symbol: '✧', duration: 9  },
+  { symbol: '★', duration: 14 }, { symbol: '♡', duration: 7  },
+];
 
 function App() {
   const { cards, flippedIds, matchedIds, moves, seconds, gameWon, handleCardClick, resetGame } =
@@ -14,9 +23,13 @@ function App() {
     <div className={styles.app}>
       {/* Floating background doodles */}
       <div className={styles.floaties} aria-hidden="true">
-        {floaties.map((symbol, i) => (
-          <span key={i} className={styles.floatie} style={{ '--i': i } as React.CSSProperties}>
-            {symbol}
+        {floaties.map((f, i) => (
+          <span
+            key={i}
+            className={styles.floatie}
+            style={{ '--i': i, '--duration': `${f.duration}s` } as React.CSSProperties}
+          >
+            {f.symbol}
           </span>
         ))}
       </div>

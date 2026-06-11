@@ -4,11 +4,30 @@
   box-sizing: border-box;
 }
 
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  25%  { background-position: 100% 0%; }
+  50%  { background-position: 100% 100%; }
+  75%  { background-position: 0% 100%; }
+  100% { background-position: 0% 50%; }
+}
+
 body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #ffe4f4 0%, #f8d7f0 30%, #e8d5f8 65%, #d5e8ff 100%);
-  background-attachment: fixed;
+  background: linear-gradient(
+    135deg,
+    #ffe4f4 0%,
+    #fbd5f5 15%,
+    #f0d0ff 30%,
+    #d8d5ff 45%,
+    #c8e8ff 60%,
+    #d5f0ff 75%,
+    #ffe0f5 90%,
+    #ffe4f4 100%
+  );
+  background-size: 300% 300%;
+  animation: gradientShift 14s ease infinite;
   min-height: 100vh;
   font-family: 'Baloo 2', sans-serif;
   -webkit-font-smoothing: antialiased;
