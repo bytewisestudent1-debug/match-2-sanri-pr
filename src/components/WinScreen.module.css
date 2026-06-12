@@ -10,7 +10,36 @@
   animation: fadeIn 0.4s ease;
 }
 
+.confettiField {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.piece {
+  position: absolute;
+  top: -8%;
+  font-size: 1.2rem;
+  color: #e91e8c;
+  animation-name: confettiFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.piece:nth-child(3n)   { color: #4A9FD8; font-size: 1rem; }
+.piece:nth-child(4n)   { color: #ffb13d; font-size: 1.4rem; }
+.piece:nth-child(5n)   { color: #9B7FC7; }
+.piece:nth-child(7n)   { color: #7BC67E; font-size: 0.9rem; }
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0.9; }
+}
+
 .modal {
+  position: relative;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 28px;
   padding: 48px 56px;
@@ -39,12 +68,39 @@
   line-height: 1.2;
 }
 
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 10px;
+}
+
+.star {
+  font-size: 2.2rem;
+  color: #e3d4ea;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.starOn {
+  color: #ffb13d;
+  text-shadow: 0 2px 8px rgba(255, 138, 0, 0.5);
+  animation: starPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(var(--n) * 0.18s);
+}
+
 .subtitle {
   font-family: 'Baloo 2', sans-serif;
   font-size: 1rem;
   color: #c2006e;
   margin: 0 0 28px;
   opacity: 0.8;
+}
+
+@keyframes starPop {
+  0%   { transform: scale(0) rotate(-40deg); opacity: 0; }
+  60%  { transform: scale(1.35) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 .stats {
@@ -143,4 +199,9 @@
 @keyframes bounce {
   from { transform: translateY(0); }
   to   { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confettiField { display: none; }
+  .confetti, .star, .modal { animation: none; }
 }

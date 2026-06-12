@@ -10,6 +10,12 @@ export const MIN_BET = 1;
 export const MAX_BET = 5;
 
 const CREDITS_KEY = 'sanrio-poker:credits';
+const STATS_KEY = 'sanrio-poker:stats';
+
+type PokerStats = {
+  handsPlayed: number;
+  biggestWin: number;
+};
 
 function loadCredits(): number {
   try {
@@ -24,6 +30,22 @@ function loadCredits(): number {
   return START_CREDITS;
 }
 
+function loadStats(): PokerStats {
+  try {
+    const raw = localStorage.getItem(STATS_KEY);
+    if (raw) {
+      const s = JSON.parse(raw) as Partial<PokerStats>;
+      return {
+        handsPlayed: Number(s.handsPlayed) || 0,
+        biggestWin: Number(s.biggestWin) || 0,
+      };
+    }
+  } catch {
+    /* ignore */
+  }
+  return { handsPlayed: 0, biggestWin: 0 };
+}
+
 export function usePoker() {
   const [credits, setCredits] = useState<number>(loadCredits);
   const [bet, setBet] = useState(1);
@@ -33,6 +55,7 @@ export function usePoker() {
   const [phase, setPhase] = useState<PokerPhase>('idle');
   const [result, setResult] = useState<HandResult | null>(null);
   const [lastWin, setLastWin] = useState(0);
+  const [stats, setStats] = useState<PokerStats>(loadStats);
 
   // Persist credits whenever they change.
   useEffect(() => {
@@ -42,6 +65,15 @@ export function usePoker() {
       /* ignore */
     }
   }, [credits]);
+
+  // Persist stats whenever they change.
+  useEffect(() => {
+    try {
+      localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    } catch {
+      /* ignore */
+    }
+  }, [stats]);
 
   const canDeal = (phase === 'idle' || phase === 'result') && credits >= bet;
 
@@ -79,6 +111,10 @@ export function usePoker() {
     setResult(evald);
     setLastWin(win);
     setPhase('result');
+    setStats(s => ({
+      handsPlayed: s.handsPlayed + 1,
+      biggestWin: Math.max(s.biggestWin, win),
+    }));
     if (win > 0) {
       setCredits(c => c + win);
       playSound('win');
@@ -103,6 +139,7 @@ export function usePoker() {
     phase,
     result,
     lastWin,
+    stats,
     canDeal,
     isBroke: credits < MIN_BET && phase !== 'dealt',
     changeBet,

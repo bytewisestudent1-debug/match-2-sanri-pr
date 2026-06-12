@@ -20,3 +20,13 @@ export const DEFAULT_DIFFICULTY: DifficultyId = 'medium';
 export function getDifficulty(id: DifficultyId): Difficulty {
   return DIFFICULTIES.find(d => d.id === id) ?? DIFFICULTIES[1];
 }
+
+/**
+ * Rate a finished game 1–3 stars by efficiency. The fewest possible moves is
+ * `pairs` (a perfect memory), so thresholds scale with the board size.
+ */
+export function starRating(moves: number, pairs: number): number {
+  if (moves <= pairs * 1.6) return 3;
+  if (moves <= pairs * 2.4) return 2;
+  return 1;
+}

@@ -39,8 +39,21 @@ export function Game({ difficulty, best, recordResult }: GameProps) {
         <span>✦ {matchedIds.length / 2} / {difficulty.pairs} pairs matched ✦</span>
       </footer>
 
+      {/* Screen-reader progress announcer */}
+      <div className={styles.srOnly} role="status" aria-live="polite">
+        {gameWon
+          ? `You won in ${moves} moves!`
+          : `${matchedIds.length / 2} of ${difficulty.pairs} pairs matched`}
+      </div>
+
       {gameWon && (
-        <WinScreen moves={moves} seconds={seconds} record={winRecord} onPlayAgain={handleReset} />
+        <WinScreen
+          moves={moves}
+          seconds={seconds}
+          pairs={difficulty.pairs}
+          record={winRecord}
+          onPlayAgain={handleReset}
+        />
       )}
     </>
   );

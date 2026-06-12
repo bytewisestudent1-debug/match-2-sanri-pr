@@ -12,7 +12,7 @@ interface PokerGameProps {
 
 export function PokerGame({ onBack }: PokerGameProps) {
   const {
-    credits, bet, hand, holds, phase, result, lastWin,
+    credits, bet, hand, holds, phase, result, lastWin, stats,
     canDeal, isBroke, changeBet, deal, toggleHold, draw, refill,
   } = usePoker();
 
@@ -124,6 +124,10 @@ export function PokerGame({ onBack }: PokerGameProps) {
           )}
         </div>
       )}
+
+      <p className={styles.sessionStats}>
+        ♠ {stats.handsPlayed} hands played · biggest win {stats.biggestWin} chips ♥
+      </p>
     </div>
   );
 }
