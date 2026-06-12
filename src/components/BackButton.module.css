@@ -1,0 +1,33 @@
+.back {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 50;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #c2006e;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(14px);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50px;
+  padding: 8px 18px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 14px rgba(155, 127, 199, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.back:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 18px rgba(155, 127, 199, 0.35);
+}
+
+.back:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.back:focus-visible {
+  outline: 3px solid #e91e8c;
+  outline-offset: 2px;
+}

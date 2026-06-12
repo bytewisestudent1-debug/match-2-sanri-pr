@@ -1,0 +1,229 @@
+.poker {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.title {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 2.4rem;
+  color: #8B0050;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 2px 0 #ffb7d5, 0 4px 12px rgba(233, 30, 140, 0.2);
+}
+
+.deco {
+  font-size: 1.4rem;
+  color: #e91e8c;
+}
+
+.subtitle {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c2006e;
+  opacity: 0.8;
+  margin: 6px 0 0;
+  letter-spacing: 0.06em;
+}
+
+/* Paytable */
+.paytable {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(155, 127, 199, 0.2);
+}
+
+.payRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8B0050;
+  padding: 3px 8px;
+  border-radius: 8px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.payRowActive {
+  background: linear-gradient(135deg, #ffb13d, #ff8a00);
+  color: #fff;
+  transform: scale(1.03);
+  box-shadow: 0 3px 10px rgba(255, 138, 0, 0.4);
+}
+
+.payValue {
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+/* Result banner */
+.banner {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #c2006e;
+  text-align: center;
+  min-height: 1.4em;
+  margin-bottom: 14px;
+  letter-spacing: 0.03em;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.bannerWin {
+  color: #ff8a00;
+  font-size: 1.15rem;
+  font-weight: 800;
+  transform: scale(1.05);
+}
+
+.bannerLose {
+  color: #9B7FC7;
+}
+
+/* Hand */
+.hand {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 22px;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(14px);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  padding: 12px 22px;
+  box-shadow: 0 4px 20px rgba(155, 127, 199, 0.22);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 48px;
+}
+
+.statValue {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #8B0050;
+  line-height: 1.1;
+}
+
+.statLabel {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #c2006e;
+  opacity: 0.75;
+}
+
+.betGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.betBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, #c8e4f8, #a0ccf0);
+  color: #1a4f7a;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(80, 150, 220, 0.3);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.betBtn:not(:disabled):hover {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.betBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.primaryBtn {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 1.05rem;
+  background: linear-gradient(135deg, #e91e8c, #c2006e);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 30px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  box-shadow: 0 6px 18px rgba(233, 30, 140, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+}
+
+.primaryBtn:not(:disabled):hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(233, 30, 140, 0.5);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.primaryBtn:focus-visible,
+.betBtn:focus-visible {
+  outline: 3px solid #8B0050;
+  outline-offset: 2px;
+}
+
+.broke {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 700;
+  color: #c2006e;
+}

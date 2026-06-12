@@ -1,73 +1,85 @@
-# React + TypeScript + Vite
+# 🎀 Sanrio Arcade
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A cute Sanrio-themed mini-game arcade. Press play, then pick a game from the menu:
 
-Currently, two official plugins are available:
+- **🧠 Memory Match** — flip two cards; if they match they stay, if not they flip
+  back. Clear the whole board to win.
+- **🎴 Sanrio Poker** — single-player video poker (Jacks or Better). Deal five
+  cards, hold the ones you want, draw once, and get paid by hand rank.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+### Shared
+- **Themed loading screen** — preloads all character art (so cards never pop in
+  mid-game) while friends light up one by one, then a Play button to enter
+- **Sound effects** — chimes generated with the Web Audio API (no audio files),
+  with a mute toggle that remembers your choice
+- **Polished UI** — animated gradient background, floating doodles, keyboard
+  accessibility, and `prefers-reduced-motion` support throughout
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Memory Match
+- **Three difficulty levels** — Easy (4 pairs), Medium (6 pairs), Hard (8 pairs)
+- **Best-score tracking** — your fewest moves and fastest time are saved per
+  difficulty in `localStorage` and celebrated with a ★ badge when you beat them
+- 3D card flips and a confetti win screen
 
-## Expanding the ESLint configuration
+### Sanrio Poker
+- Full Jacks-or-Better hand evaluation with a classic 9/6 paytable
+- Adjustable bet, hold/draw mechanics, and persistent chip balance
+  (auto-refill when you run out)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧱 Tech stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vite.dev/) for dev/build
+- CSS Modules for styling (no UI framework)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install      # install dependencies
+npm run dev      # start the dev server (http://localhost:5173)
+npm run build    # type-check and build for production
+npm run preview  # preview the production build
+npm run lint     # run ESLint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📁 Project structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── App.tsx                  # loading → menu → game routing
+├── components/
+│   ├── Menu.tsx             # home screen: pick a game
+│   ├── LoadingScreen.tsx    # themed asset-preloading splash + Play button
+│   ├── BackButton.tsx       # shared "← menu" button
+│   ├── SoundToggle.tsx      # mute / unmute button
+│   │  # — Memory Match —
+│   ├── MemoryGame.tsx       # memory screen (difficulty + board wiring)
+│   ├── Game.tsx             # a single memory round
+│   ├── Card.tsx             # a flip card (accessible button)
+│   ├── GameBoard.tsx        # responsive card grid
+│   ├── ScoreBoard.tsx       # moves / time / best score + reset
+│   ├── DifficultyPicker.tsx # Easy / Medium / Hard selector
+│   ├── WinScreen.tsx        # victory modal with new-record badges
+│   │  # — Sanrio Poker —
+│   ├── PokerGame.tsx        # video poker screen
+│   └── PlayingCard.tsx      # a standard playing card
+├── hooks/
+│   ├── useGameState.ts      # memory logic (deck, flips, matching, timer)
+│   ├── useBestScores.ts     # persistent best-score tracking
+│   ├── useImagePreloader.ts # preloads character art, reports progress
+│   └── usePoker.ts          # poker logic + persistent chip balance
+├── data/
+│   ├── characters.ts        # the Sanrio characters
+│   └── difficulty.ts        # memory difficulty definitions
+└── utils/
+    ├── format.ts            # mm:ss time formatting
+    ├── sound.ts             # Web Audio sound engine
+    └── poker.ts             # deck + Jacks-or-Better hand evaluation
+```
+
+## 🎨 Characters
+
+Hello Kitty · My Melody · Cinnamoroll · Kuromi · Keroppi · Pochacco ·
+Tuxedo Sam · Chococat

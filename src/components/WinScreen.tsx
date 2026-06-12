@@ -1,18 +1,15 @@
 import styles from './WinScreen.module.css';
+import { formatTime } from '../utils/format';
+import type { RecordResult } from '../hooks/useBestScores';
 
 interface WinScreenProps {
   moves: number;
   seconds: number;
+  record?: RecordResult;
   onPlayAgain: () => void;
 }
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const s = (seconds % 60).toString().padStart(2, '0');
-  return `${m}:${s}`;
-}
-
-export function WinScreen({ moves, seconds, onPlayAgain }: WinScreenProps) {
+export function WinScreen({ moves, seconds, record, onPlayAgain }: WinScreenProps) {
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
@@ -23,11 +20,13 @@ export function WinScreen({ moves, seconds, onPlayAgain }: WinScreenProps) {
           <div className={styles.stat}>
             <span className={styles.statValue}>{moves}</span>
             <span className={styles.statLabel}>moves</span>
+            {record?.newBestMoves && <span className={styles.badge}>★ best</span>}
           </div>
           <div className={styles.divider} />
           <div className={styles.stat}>
             <span className={styles.statValue}>{formatTime(seconds)}</span>
             <span className={styles.statLabel}>time</span>
+            {record?.newBestTime && <span className={styles.badge}>★ best</span>}
           </div>
         </div>
         <button className={styles.playAgain} onClick={onPlayAgain}>

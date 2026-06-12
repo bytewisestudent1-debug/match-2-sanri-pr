@@ -1,7 +1,12 @@
-import { useGameState } from './hooks/useGameState';
-import { GameBoard } from './components/GameBoard';
-import { ScoreBoard } from './components/ScoreBoard';
-import { WinScreen } from './components/WinScreen';
+import { useState } from 'react';
+import { useImagePreloader } from './hooks/useImagePreloader';
+import { Menu } from './components/Menu';
+import type { GameId } from './components/Menu';
+import { MemoryGame } from './components/MemoryGame';
+import { PokerGame } from './components/PokerGame';
+import { SoundToggle } from './components/SoundToggle';
+import { LoadingScreen } from './components/LoadingScreen';
+import { characters } from './data/characters';
 import styles from './App.module.css';
 
 const floaties = [
@@ -15,9 +20,19 @@ const floaties = [
   { symbol: '★', duration: 14 }, { symbol: '♡', duration: 7  },
 ];
 
+// Stable reference so the preloader effect runs once.
+const CHARACTER_IMAGES = characters.map(c => c.image);
+
+type Screen = 'menu' | GameId;
+
 function App() {
-  const { cards, flippedIds, matchedIds, moves, seconds, gameWon, handleCardClick, resetGame } =
-    useGameState();
+  const { ready, progress } = useImagePreloader(CHARACTER_IMAGES);
+  const [entered, setEntered] = useState(false);
+  const [screen, setScreen] = useState<Screen>('menu');
+
+  if (!entered) {
+    return <LoadingScreen progress={progress} ready={ready} onEnter={() => setEntered(true)} />;
+  }
 
   return (
     <div className={styles.app}>
@@ -34,32 +49,13 @@ function App() {
         ))}
       </div>
 
+      <SoundToggle />
+
       <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.titleRow}>
-            <span className={styles.titleDeco}>✿</span>
-            <h1 className={styles.title}>Sanrio Memory</h1>
-            <span className={styles.titleDeco}>✿</span>
-          </div>
-          <p className={styles.subtitle}>♡ match all your sanrio friends ♡</p>
-        </header>
-
-        <ScoreBoard moves={moves} seconds={seconds} onReset={resetGame} />
-        <GameBoard
-          cards={cards}
-          flippedIds={flippedIds}
-          matchedIds={matchedIds}
-          onCardClick={handleCardClick}
-        />
-
-        <footer className={styles.footer}>
-          <span>✦ {matchedIds.length / 2} / 8 pairs matched ✦</span>
-        </footer>
+        {screen === 'menu' && <Menu onSelect={setScreen} />}
+        {screen === 'memory' && <MemoryGame onBack={() => setScreen('menu')} />}
+        {screen === 'poker' && <PokerGame onBack={() => setScreen('menu')} />}
       </div>
-
-      {gameWon && (
-        <WinScreen moves={moves} seconds={seconds} onPlayAgain={resetGame} />
-      )}
     </div>
   );
 }

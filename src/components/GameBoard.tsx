@@ -6,12 +6,16 @@ interface GameBoardProps {
   cards: CardData[];
   flippedIds: number[];
   matchedIds: number[];
+  columns: number;
   onCardClick: (cardId: number) => void;
 }
 
-export function GameBoard({ cards, flippedIds, matchedIds, onCardClick }: GameBoardProps) {
+export function GameBoard({ cards, flippedIds, matchedIds, columns, onCardClick }: GameBoardProps) {
   return (
-    <div className={styles.grid}>
+    <div
+      className={styles.grid}
+      style={{ '--columns': columns } as React.CSSProperties}
+    >
       {cards.map(card => (
         <Card
           key={card.cardId}

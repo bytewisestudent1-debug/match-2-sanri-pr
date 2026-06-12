@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { characters } from '../data/characters';
 import type { Character } from '../data/characters';
+import { playSound } from '../utils/sound';
 
 export type CardData = {
   cardId: number;
@@ -26,21 +27,32 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function buildDeck(): CardData[] {
-  const pairs = [...characters, ...characters];
-  return shuffle(pairs).map((character, index) => ({ cardId: index, character }));
+function buildDeck(pairs: number): CardData[] {
+  // Pick a random subset of characters so smaller boards stay varied.
+  const chosen = shuffle(characters).slice(0, pairs);
+  const deck = [...chosen, ...chosen];
+  return shuffle(deck).map((character, index) => ({ cardId: index, character }));
 }
 
-export function useGameState() {
-  const [state, setState] = useState<GameState>({
-    cards: buildDeck(),
+function initialState(pairs: number): GameState {
+  return {
+    cards: buildDeck(pairs),
     flippedIds: [],
     matchedIds: [],
     moves: 0,
     seconds: 0,
     gameStarted: false,
     gameWon: false,
-  });
+  };
+}
+
+/**
+ * Core memory-game logic. `onWin` fires once with the final moves/seconds
+ * when the board is cleared. The board is rebuilt only on resetGame() — to
+ * change difficulty, remount this hook's owner with a new React `key`.
+ */
+export function useGameState(pairs: number, onWin?: (moves: number, seconds: number) => void) {
+  const [state, setState] = useState<GameState>(() => initialState(pairs));
 
   const lockedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -56,65 +68,61 @@ export function useGameState() {
     };
   }, [state.gameStarted, state.gameWon]);
 
-  const handleCardClick = useCallback((cardId: number) => {
+  // Not memoized: re-created each render so it always reads fresh state/onWin.
+  // Match resolution is guarded by lockedRef, and clicks are discrete events
+  // (state has flushed between them), so reading `state` directly is safe.
+  const handleCardClick = (cardId: number) => {
     if (lockedRef.current) return;
+    if (state.flippedIds.includes(cardId)) return;
+    if (state.matchedIds.includes(cardId)) return;
 
-    setState(prev => {
-      if (prev.flippedIds.includes(cardId)) return prev;
-      if (prev.matchedIds.includes(cardId)) return prev;
+    playSound('flip');
+    const newFlipped = [...state.flippedIds, cardId];
 
-      const newFlipped = [...prev.flippedIds, cardId];
-      const newStarted = !prev.gameStarted ? true : prev.gameStarted;
+    if (newFlipped.length < 2) {
+      setState(s => ({ ...s, flippedIds: newFlipped, gameStarted: true }));
+      return;
+    }
 
-      if (newFlipped.length < 2) {
-        return { ...prev, flippedIds: newFlipped, gameStarted: newStarted };
-      }
+    // Two cards flipped — check match.
+    lockedRef.current = true;
+    const [firstId, secondId] = newFlipped;
+    const firstCard = state.cards.find(c => c.cardId === firstId)!;
+    const secondCard = state.cards.find(c => c.cardId === secondId)!;
+    const isMatch = firstCard.character.id === secondCard.character.id;
+    const newMoves = state.moves + 1;
 
-      // Two cards flipped — check match
-      lockedRef.current = true;
-      const [firstId, secondId] = newFlipped;
-      const firstCard = prev.cards.find(c => c.cardId === firstId)!;
-      const secondCard = prev.cards.find(c => c.cardId === secondId)!;
-      const isMatch = firstCard.character.id === secondCard.character.id;
-      const newMoves = prev.moves + 1;
+    if (isMatch) {
+      const newMatched = [...state.matchedIds, firstId, secondId];
+      const won = newMatched.length === state.cards.length;
+      lockedRef.current = false;
+      playSound(won ? 'win' : 'match');
+      setState(s => ({
+        ...s,
+        flippedIds: [],
+        matchedIds: newMatched,
+        moves: newMoves,
+        gameStarted: true,
+        gameWon: won,
+      }));
+      if (won) onWin?.(newMoves, state.seconds);
+      return;
+    }
 
-      if (isMatch) {
-        const newMatched = [...prev.matchedIds, firstId, secondId];
-        const gameWon = newMatched.length === prev.cards.length;
-        lockedRef.current = false;
-        return {
-          ...prev,
-          flippedIds: [],
-          matchedIds: newMatched,
-          moves: newMoves,
-          gameStarted: newStarted,
-          gameWon,
-        };
-      }
+    // No match — show both briefly, then flip back.
+    setState(s => ({ ...s, flippedIds: newFlipped, moves: newMoves, gameStarted: true }));
+    setTimeout(() => {
+      playSound('mismatch');
+      setState(s => ({ ...s, flippedIds: [] }));
+      lockedRef.current = false;
+    }, 900);
+  };
 
-      // No match — flip back after delay
-      setTimeout(() => {
-        setState(s => ({ ...s, flippedIds: [] }));
-        lockedRef.current = false;
-      }, 900);
-
-      return { ...prev, flippedIds: newFlipped, moves: newMoves, gameStarted: newStarted };
-    });
-  }, []);
-
-  const resetGame = useCallback(() => {
+  const resetGame = () => {
     lockedRef.current = false;
     if (timerRef.current) clearInterval(timerRef.current);
-    setState({
-      cards: buildDeck(),
-      flippedIds: [],
-      matchedIds: [],
-      moves: 0,
-      seconds: 0,
-      gameStarted: false,
-      gameWon: false,
-    });
-  }, []);
+    setState(initialState(pairs));
+  };
 
   return { ...state, handleCardClick, resetGame };
 }

@@ -10,11 +10,16 @@ interface CardProps {
 
 export function Card({ card, isFlipped, isMatched, onClick }: CardProps) {
   const { character } = card;
+  const revealed = isFlipped || isMatched;
 
   return (
-    <div
+    <button
+      type="button"
       className={`${styles.cardWrapper} ${isMatched ? styles.matched : ''}`}
       onClick={() => !isFlipped && !isMatched && onClick(card.cardId)}
+      disabled={isMatched}
+      aria-label={revealed ? character.name : 'Hidden card'}
+      aria-pressed={revealed}
       style={{ '--accent': character.accent } as React.CSSProperties}
     >
       <div className={`${styles.cardInner} ${isFlipped || isMatched ? styles.flipped : ''}`}>
@@ -44,6 +49,6 @@ export function Card({ card, isFlipped, isMatched, onClick }: CardProps) {
           {isMatched && <div className={styles.matchGlow} />}
         </div>
       </div>
-    </div>
+    </button>
   );
 }
